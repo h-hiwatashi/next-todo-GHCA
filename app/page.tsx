@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -59,6 +59,17 @@ const Home = () => {
   const [todos, setTodos] = useState<string[]>([]);
   const [newTodo, setNewTodo] = useState<string>("");
 
+  const [message, setMessage] = useState();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch("/api/hello");
+      const { message } = await res.json();
+      setMessage(message);
+    };
+    fetchData();
+  }, []);
+
   const addTodo = () => {
     if (newTodo.trim() !== "") {
       setTodos([...todos, newTodo]);
@@ -90,6 +101,7 @@ const Home = () => {
         }}
       >
         <h1>TODOリスト</h1>
+        <p>{message ? message : "Loading..."}</p>
         <div style={{ display: "flex", alignItems: "center" }}>
           <input
             type="text"
